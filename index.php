@@ -15,6 +15,12 @@
 
 	error_reporting(0);
 
+	// Function for define default constants (default-define). It defines the
+	// constant only if it is not yet defined.
+	function ddefine($name, $value) {
+		defined($name) or define($name, $value);
+	}
+
 	//	----------- CONFIGURATION START ------------
 	//define("SCRIPT_NAME", $_SERVER["PHP_SELF"]);
 	define("SCRIPT_NAME", "");
@@ -93,48 +99,50 @@
 	define("FADE_DURATION_MS", 300);
 	define("LOAD_FADE_GRACE", 500);
 
-	define("TEXT_GALLERY_NAME", "Single File PHP Gallery");
-	define("TEXT_HOME", "Home");
-	define("TEXT_CLOSE_IMG_VIEW", "Close Image");
-	define("TEXT_ACTUAL_SIZE", "Actual Size");
-	define("TEXT_FULLRES", "Full resolution");
-	define("TEXT_PREVIOUS", "<< Previous");
-	define("TEXT_NEXT", "Next >>");
-	define("TEXT_INFO", "Information");
-	define("TEXT_DOWNLOAD", "Download full-size image");
-	define("TEXT_NO_IMAGES", "No Images in gallery");
-	define("TEXT_DATE", "Date");
-	define("TEXT_FILESIZE", "File size");
-	define("TEXT_IMAGESIZE", "Full Image");
-	define("TEXT_DISPLAYED_IMAGE", "Displayed Image");
-	define("TEXT_DIR_NAME", "Gallery Name");
-	define("TEXT_IMAGE_NAME", "Image Name");
-	define("TEXT_FILE_NAME", "File Name");
-	define("TEXT_DIRS", "Sub galleries");
-	define("TEXT_IMAGES", "Images");
-	define("TEXT_IMAGE_NUMBER", "Image number");
-	define("TEXT_FILES", "Files");
-	define("TEXT_DESCRIPTION", "Description");
-	define("TEXT_DIRECT_LINK_GALLERY", "Direct link to Gallery");
-	define("TEXT_DIRECT_LINK_IMAGE", "Direct link to Image");
-	define("TEXT_NO_PREVIEW_FILE", "No Preview for file");
-	define("TEXT_IMAGE_LOADING", "Image Loading ");
-	define("TEXT_LINKS", "Links");
-	define("TEXT_NOT_SCALED", "Not Scaled");
-	define("TEXT_LINK_BACK", "Back to my site");
-	define("TEXT_THIS_IS_FULL", "Full");
-	define("TEXT_THIS_IS_PREVIEW", "Preview");
-	define("TEXT_SCALED_TO", "Scaled to");
-	define("TEXT_YES", "Yes");
-	define("TEXT_NO", "No");
-	define("TEXT_EXIF_DATE", "EXIF Date");
-	define("TEXT_EXIF_CAMERA", "Camera");
-	define("TEXT_EXIF_ISO", "ISO");
-	define("TEXT_EXIF_SHUTTER", "Shutter Speed");
-	define("TEXT_EXIF_APERTURE", "Aperture");
-	define("TEXT_EXIF_FOCAL", "Focal Length");
-	define("TEXT_EXIF_FLASH", "Flash fired");
-	define("TEXT_EXIF_MISSING", "No EXIF informatin in image");
+	ddefine("TEXT_GALLERY_NAME", "Single File PHP Gallery");
+	ddefine("TEXT_HOME", "Home");
+	ddefine("TEXT_CLOSE_IMG_VIEW", "Close Image");
+	ddefine("TEXT_ACTUAL_SIZE", "Actual Size");
+	ddefine("TEXT_FULLRES", "Full resolution");
+	ddefine("TEXT_PREVIOUS", "<< Previous");
+	ddefine("TEXT_NEXT", "Next >>");
+	ddefine("TEXT_KEYBOARD_NAV", "You can use keyboard arrows to switch the images");
+	ddefine("TEXT_INFO", "Information");
+	ddefine("TEXT_DOWNLOAD", "Download full-size image");
+	ddefine("TEXT_GALLERY_DOWNLOAD", "Download the whole gallery (all images)");
+	ddefine("TEXT_NO_IMAGES", "No Images in gallery");
+	ddefine("TEXT_DATE", "Date");
+	ddefine("TEXT_FILESIZE", "File size");
+	ddefine("TEXT_IMAGESIZE", "Full Image");
+	ddefine("TEXT_DISPLAYED_IMAGE", "Displayed Image");
+	ddefine("TEXT_DIR_NAME", "Gallery Name");
+	ddefine("TEXT_IMAGE_NAME", "Image Name");
+	ddefine("TEXT_FILE_NAME", "File Name");
+	ddefine("TEXT_DIRS", "Sub galleries");
+	ddefine("TEXT_IMAGES", "Images");
+	ddefine("TEXT_IMAGE_NUMBER", "Image number");
+	ddefine("TEXT_FILES", "Files");
+	ddefine("TEXT_DESCRIPTION", "Description");
+	ddefine("TEXT_DIRECT_LINK_GALLERY", "Direct link to Gallery");
+	ddefine("TEXT_DIRECT_LINK_IMAGE", "Direct link to Image");
+	ddefine("TEXT_NO_PREVIEW_FILE", "No Preview for file");
+	ddefine("TEXT_IMAGE_LOADING", "Image Loading ");
+	ddefine("TEXT_LINKS", "Links");
+	ddefine("TEXT_NOT_SCALED", "Not Scaled");
+	ddefine("TEXT_LINK_BACK", "Back to my site");
+	ddefine("TEXT_THIS_IS_FULL", "Full");
+	ddefine("TEXT_THIS_IS_PREVIEW", "Preview");
+	ddefine("TEXT_SCALED_TO", "Scaled to");
+	ddefine("TEXT_YES", "Yes");
+	ddefine("TEXT_NO", "No");
+	ddefine("TEXT_EXIF_DATE", "EXIF Date");
+	ddefine("TEXT_EXIF_CAMERA", "Camera");
+	ddefine("TEXT_EXIF_ISO", "ISO");
+	ddefine("TEXT_EXIF_SHUTTER", "Shutter Speed");
+	ddefine("TEXT_EXIF_APERTURE", "Aperture");
+	ddefine("TEXT_EXIF_FOCAL", "Focal Length");
+	ddefine("TEXT_EXIF_FLASH", "Flash fired");
+	ddefine("TEXT_EXIF_MISSING", "No EXIF information in image");
 
 	$color_body_back = "#000000";
 	$color_body_text = "#aaaaaa";
