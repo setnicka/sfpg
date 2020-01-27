@@ -33,6 +33,7 @@
 	define("DIR_SORT_REVERSE", FALSE);
 	define("DIR_SORT_BY_TIME", FALSE);
 	$dir_exclude = array("_sfpg_data", "_sfpg_icons");
+	define("IMAGE_DESCRIPTION_FILE", "comments.txt");
 
 	define("SHOW_IMAGE_EXT", FALSE);
 	define("IMAGE_SORT_REVERSE", FALSE);
@@ -765,9 +766,12 @@
 		var dirThumb = [];
 		var dirName = [];
 		var dirInfo = [];
+		var dirSize = [];
+		var dirSizeFull = [];
 
 		var imgLink = [];
 		var imgName = [];
+		var imgDescription = [];
 		var imgInfo = [];
 
 		var fileLink = [];
@@ -1071,6 +1075,7 @@
 					info += '</div>';
 					var splint = imgInfo[id].split('|');
 					info += '<strong>".str_to_script(TEXT_IMAGE_NAME)."</strong><br><div class=\"sfpg_info_text\">'+imgName[id] + '</div><br>';
+					info += '<strong>".str_to_script(TEXT_IMAGE_DESCRIPTION)."</strong><br><div class=\"sfpg_info_text\">'+imgDescription[id] + '</div><br>';
 					info += '<strong>".str_to_script(TEXT_INFO)."</strong><br><div class=\"sfpg_info_text\">';
 					info += '".str_to_script(TEXT_DATE).": '+splint[0]+'<br>';
 					info += '".str_to_script(TEXT_IMAGESIZE).": '+splint[2]+' x '+splint[3]+'<br>';
@@ -1213,6 +1218,7 @@
 					if (graceRun == 0)
 					{
 						document.getElementById('full').src = preloadImg.src;
+						document.getElementById('full_text').innerHTML = (imgDescription[index] != '' ? imgDescription[index] : imgName[index]);
 						imgFullWidth = preloadImg.width;
 						imgFullHeight = preloadImg.height;
 						fillInfo('img', index);
@@ -1331,7 +1337,7 @@
 			else if (type == 'img')
 			{
 				content = '<div onclick=\"openImageView('+elementNumber+', false)\" onmouseover=\"this.className=\'innerboximg_hover\'; fillInfo(\'img\', '+elementNumber+')\" onmouseout=\"this.className=\'innerboximg\'; fillInfo(\'dir\', 0)\" class=\"innerboximg\"><div class=\"thumbimgbox\"><img class=\"thumb\" alt=\"\" src=\"'+phpSelf+'?cmd=thumb&sfpg='+imgLink[elementNumber]+'\"></div>';
-				". (THUMB_CHARS_MAX ? "content += thumbDisplayName(imgName[elementNumber]);" : "")."
+				". (THUMB_CHARS_MAX ? "content += thumbDisplayName( (imgDescription[elementNumber] != '' ? imgDescription[elementNumber] : imgName[elementNumber]) );" : "")."
 				content += '</div>';
 			}
 			else if (type == 'file')
@@ -1479,7 +1485,17 @@
 			$filed = explode("|", file_get_contents(DATA_ROOT . "info/" . GALLERY . "_info.sfpg"));
 		}
 		echo "dirThumb[0] = '" . $filed[4] . "';\n";
-		echo "dirInfo[0] = '" . str_to_script($filed[3]."|".$filed[0]."|".$filed[1]."|".$filed[2]."|".@file_get_contents(GALLERY_ROOT . GALLERY . DIR_DESC_FILE)) . "';\n\n";
+		echo "dirInfo[0] = '" . str_to_script($filed[3]."|".$filed[0]."|".$filed[1]."|".$filed[2]."|".@file_get_contents(GALLERY_ROOT . GALLERY . DIR_DESC_FILE)) . "';\n";
+		echo "dirSize[0] = '" .trim(shell_exec('du -h -c "'.GALLERY_ROOT.GALLERY.'" | tail -n1 | cut -f1 ')). "';\n\n";
+
+		//Load comment from comment file (if there is any)
+		$imgDescription = array();
+		if($lines = file(GALLERY_ROOT . GALLERY . IMAGE_DESCRIPTION_FILE)) {
+			foreach ($lines as $key => $line) {
+				if(preg_match('/(.*)\t+(.*)/', $line, $matches))
+					$imgDescription[$matches[1]] = $matches[2];
+			}
+		}
 
 		$item = 1;
 		foreach ($dirs as $val)
@@ -1501,7 +1517,8 @@
 			}
 			$filed = explode("|", file_get_contents(DATA_ROOT . "info/" . GALLERY . $val . "/_info.sfpg"));
 			echo "dirThumb[" . ($item) . "] = '" . $filed[4] . "';\n";
-			echo "dirInfo[" . ($item) . "] = '" . str_to_script($filed[3]."|".$filed[0]."|".$filed[1]."|".$filed[2]."|".@file_get_contents(GALLERY_ROOT . GALLERY . $val . "/" . DIR_DESC_FILE)) . "';\n\n";
+			echo "dirInfo[" . ($item) . "] = '" . str_to_script($filed[3]."|".$filed[0]."|".$filed[1]."|".$filed[2]."|".@file_get_contents(GALLERY_ROOT . GALLERY . $val . "/" . DIR_DESC_FILE)) . "';\n";
+			echo "dirSize[" . ($item) . "] = '" .trim(shell_exec('du -h "'.GALLERY_ROOT.GALLERY.$val.'/" | tail -n1 | cut -f1 ')). "';\n\n";
 			$item++;
 		}
 
@@ -1516,6 +1533,7 @@
 			echo "imgLink[" . ($item) . "] = '" . sfpg_url_string(GALLERY, $val) . "';\n";
 			$img_name = sfpg_display_name($val, SHOW_IMAGE_EXT);
 			echo "imgName[" . ($item) . "] = '" . str_to_script($img_name) . "';\n";
+			echo "imgDescription[" . ($item) . "] = '" . (isset($imgDescription[$val]) ? $imgDescription[$val] : '') . "';\n";
 			echo "imgInfo[" . ($item) . "] = '" . str_to_script(@file_get_contents(DATA_ROOT . "info/" . GALLERY . $val . ".sfpg")."|".@file_get_contents(GALLERY_ROOT . GALLERY . $val . DESC_EXT))."';\n\n";
 			$item++;
 		}
@@ -1727,8 +1745,9 @@
 				zoom:1;
 				*display:inline;
 				width: " . ((2 * (THUMB_BORDER_WIDTH + THUMB_MARGIN + THUMB_BOX_MARGIN)) + THUMB_MAX_WIDTH + 2) . "px;
-				height: " . ((2 * (THUMB_BORDER_WIDTH + THUMB_MARGIN + THUMB_BOX_MARGIN)) + THUMB_MAX_HEIGHT + 2 + THUMB_BOX_EXTRA_HEIGHT) . "px;
-				margin: 0px;
+				"
+				//height: " . ((2 * (THUMB_BORDER_WIDTH + THUMB_MARGIN + THUMB_BOX_MARGIN)) + THUMB_MAX_HEIGHT + 2 + THUMB_BOX_EXTRA_HEIGHT) . "px;
+				."margin: 0px;
 				padding: 0px;
 			}
 
@@ -1746,7 +1765,9 @@
 				margin: " . THUMB_BOX_MARGIN . "px;
 				padding: 0px;
 				width: " . ((2 * (THUMB_BORDER_WIDTH + THUMB_MARGIN)) + THUMB_MAX_WIDTH + 2) . "px;
-				height: " . ((2 * (THUMB_BORDER_WIDTH + THUMB_MARGIN)) + THUMB_MAX_HEIGHT + 2 + THUMB_BOX_EXTRA_HEIGHT) . "px;
+				"
+				//height: " . ((2 * (THUMB_BORDER_WIDTH + THUMB_MARGIN)) + THUMB_MAX_HEIGHT + 2 + THUMB_BOX_EXTRA_HEIGHT) . "px;
+				."padding-bottom: 3px;
 			}
 
 			.innerboxdir, .innerboxdir_hover
@@ -1792,6 +1813,12 @@
 			{
 				cursor:pointer;
 				border : ".FULLIMG_BORDER_WIDTH."px solid $color_fullimg_border;
+			}
+
+			.full_text
+			{
+				font-size: 16px;
+				padding-bottom: 4px;
 			}
 
 			.thumb
@@ -1935,6 +1962,7 @@
 	"<div id=\"box_image\" class=\"box_image\">" .
 		"<table class=\"sfpg_disp\" cellspacing=\"0\">" .
 			"<tr><td class=\"mid\">" .
+				"<div id=\"full_text\" class=\"full_text\"></div>" .
 				"<img alt=\"\" src=\"\" id=\"full\" class=\"full_image\" onclick=\"closeImageView()\">" .
 			"</td></tr>" .
 		"</table>" .
