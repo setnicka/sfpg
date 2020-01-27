@@ -16,6 +16,12 @@
 	error_reporting(0);
 
 	//	----------- CONFIGURATION START ------------
+	//define("SCRIPT_NAME", $_SERVER["PHP_SELF"]);
+	define("SCRIPT_NAME", "");
+	define("URL_SEPARATOR", "*");
+	define("CRYPTIC_URL", FALSE);
+	define("MOD_REWRITE", TRUE);
+	//	--------------------------------------------
 
 	define("GALLERY_ROOT", "./");
 	define("DATA_ROOT", "./_sfpg_data/");
@@ -171,6 +177,11 @@
 
 	//	----------- CONFIGURATION END ------------
 
+	$url_self = substr_count($_SERVER['PHP_SELF'], '/');
+	$url_request = substr_count($_SERVER['REQUEST_URI'], '/');
+	$url_base = '';
+	for($i=1; $i<=($url_request-$url_self); $i++) $url_base.='../';
+	define("URL_BASE", $url_base);
 
 	function sfpg_array_sort(&$arr, &$arr_time, $sort_by_time, $sort_reverse)
 	{
@@ -235,8 +246,13 @@
 
 	function sfpg_url_string($dir = "", $img = "")
 	{
-		$res = $dir . "*" . $img . "*";
-		return sfpg_base64url_encode($res . md5($res . SECURITY_PHRASE));
+		if ($img == "") $res = $dir;
+		else $res = $dir . URL_SEPARATOR . $img;
+		if (CRYPTIC_URL) return sfpg_base64url_encode($res . md5($res . URL_SEPARATOR . SECURITY_PHRASE));
+		else {
+			$a = urlencode($res);
+			return (MOD_REWRITE ? str_replace("%2F", "/", $a) : $a);
+		}
 	}
 
 
@@ -361,7 +377,7 @@
 		}
 		else
 		{
-			header("Location: " . $_SERVER["PHP_SELF"]);
+			header("Location: " . ( SCRIPT_NAME != "" ? SCRIPT_NAME : "./"));
 			exit;
 		}
 	}
@@ -740,7 +756,7 @@
 		echo "<script language=\"JavaScript\" TYPE=\"text/javascript\">
 		<!--
 
-		var phpSelf = '" . $_SERVER["PHP_SELF"] . "';
+		var phpSelf = '" .URL_BASE . SCRIPT_NAME . "';
 
 		var navLink = [];
 		var navName = [];
@@ -1042,8 +1058,12 @@
 					}
 					echo "
 					info += '</div><br>';
-					info += '<strong>".str_to_script(TEXT_DESCRIPTION)."</strong><br><div class=\"sfpg_info_text\">'+splint[4]+'<br></div><br>';
-					info += '<strong>".str_to_script(TEXT_LINKS)."</strong><br><a href=\"'+phpSelf+'?sfpg='+dirLink[id]+'\">".str_to_script(TEXT_DIRECT_LINK_GALLERY)."</a><br><br>';
+					info += '<strong>".str_to_script(TEXT_DESCRIPTION)."</strong><br><div class=\"sfpg_info_text\">'+splint[4]+'<br></div><br>';\n";
+					if (MOD_REWRITE) {
+						echo "info += '<strong>".str_to_script(TEXT_LINKS)."</strong><br><a href=\"".URL_BASE."'+dirLink[id]+'\">".str_to_script(TEXT_DIRECT_LINK_GALLERY)."</a><br><br>';\n";
+					} else {
+						echo "info += '<strong>".str_to_script(TEXT_LINKS)."</strong><br><a href=\"'+phpSelf+'?sfpg='+dirLink[id]+'\">".str_to_script(TEXT_DIRECT_LINK_GALLERY)."</a><br><br>';\n";
+					}
 				}
 				else if (type == 'img')
 				{
@@ -1069,9 +1089,12 @@
 					info += '".str_to_script(TEXT_IMAGE_NUMBER).": '+id+' / '+(imgLink.length-1)+'<br>';
 					info += '</div><br>';
 					info += '<strong>".str_to_script(TEXT_DESCRIPTION)."</strong><br><div class=\"sfpg_info_text\">'+splint[5]+'<br></div><br>';
-					info += '<strong>".str_to_script(TEXT_LINKS)."</strong><br>';
-					info += '<a href=\"'+phpSelf+'?sfpg='+imgLink[id]+'\">".str_to_script(TEXT_DIRECT_LINK_IMAGE)."</a><br>';
-					".(TEXT_DOWNLOAD ? "info += '<a href=\"'+phpSelf+'?cmd=dl&sfpg='+imgLink[id]+'\">".str_to_script(TEXT_DOWNLOAD)."</a><br><br>';" : "")."
+					info += '<strong>".str_to_script(TEXT_LINKS)."</strong><br>';";
+					if (MOD_REWRITE) {
+						echo "info += '<a href=\"".URL_BASE."'+imgLink[id]+'\">".str_to_script(TEXT_DIRECT_LINK_IMAGE)."</a><br>';\n";
+					} else {
+						echo "info += '<a href=\"'+phpSelf+'?sfpg='+imgLink[id]+'\">".str_to_script(TEXT_DIRECT_LINK_IMAGE)."</a><br>';\n";
+					}
 				}
 				else if (type == 'file')
 				{
@@ -1131,7 +1154,7 @@
 			{
 				opt = '&info=1';
 			}
-			window.location	= phpSelf+'?sfpg='+link+opt;
+			window.location	= ".(MOD_REWRITE ? "'".( URL_BASE == '' ? './' : URL_BASE)."'" : "phpSelf+'?sfpg='")."+link+opt;
 		}
 
 
@@ -1543,9 +1566,16 @@
 	$get_set = FALSE;
 	if (isset($_GET["sfpg"]))
 	{
-		$get = explode("*", sfpg_base64url_decode($_GET["sfpg"]));
-		if ((md5($get[0] . "*" . $get[1] . "*" . SECURITY_PHRASE) === $get[2]) and (strpos($get[0] . $get[1], "..") === FALSE))
-		{
+		if (CRYPTIC_URL) {
+			$get = explode(URL_SEPARATOR, sfpg_base64url_decode($_GET["sfpg"]));
+			if (count($get)>=3) $check = ((md5($get[0] . URL_SEPARATOR . $get[1] . URL_SEPARATOR . SECURITY_PHRASE) === $get[2]) and (strpos($get[0] . $get[1], "..") === FALSE));
+			else $check = ((md5($get[0] . URL_SEPARATOR . SECURITY_PHRASE) === $get[1]) and (strpos($get[0], "..") === FALSE));
+		} else {
+			$get = explode(URL_SEPARATOR, $_GET["sfpg"]);
+			if (count($get)>=2) $check = ((strpos($get[0] . $get[1], "..") === FALSE));
+			else $check = ((strpos($get[0], "..") === FALSE));
+		}
+		if ($check) {
 			define("GALLERY", $get[0]);
 			define("IMAGE", $get[1]);
 			$get_set = TRUE;
