@@ -29,9 +29,9 @@
 	define("MOD_REWRITE", TRUE);
 	//	--------------------------------------------
 
-	define("GALLERY_ROOT", "./");
-	define("DATA_ROOT", "./_sfpg_data/");
-	define("SECURITY_PHRASE", "change this text!");
+	ddefine("GALLERY_ROOT", "./");
+	ddefine("DATA_ROOT", "./_sfpg_data/");
+	ddefine("SECURITY_PHRASE", "change this text!");
 
 	define("DIR_NAME_FILE", "_name.txt");
 	define("DIR_IMAGE_FILE", "_image.jpg");
@@ -53,51 +53,51 @@
 	define("FILE_THUMB_EXT", ".jpg");
 	define("FILE_SORT_REVERSE", FALSE);
 	define("FILE_SORT_BY_TIME", FALSE);
-	$file_exclude = array();
+	defined($file_exclude) or $file_exclude = array();
 	$file_ext_exclude = array(".php", ".txt");
 	$file_ext_thumbs = array();
 
-	define("LINK_BACK", "");
-	define("CHARSET", "iso-8859-1");
-	define("DATE_FORMAT", "Y-m-d h:i:s");
-	define("DESC_EXT", ".txt");
-	define("SORT_DIVIDER", "--");
-	define("SORT_NATURAL", TRUE);
-	define("FONT_SIZE", 12);
-	define("UNDERSCORE_AS_SPACE", TRUE);
-	define("NL_TO_BR", FALSE);
-	define("SHOW_EXIF_INFO", TRUE);
+	ddefine("LINK_BACK", "");
+	ddefine("CHARSET", "utf-8");
+	ddefine("DATE_FORMAT", "H:i:s d.m.Y");
+	ddefine("DESC_EXT", ".txt");
+	ddefine("SORT_DIVIDER", "--");
+	ddefine("SORT_NATURAL", TRUE);
+	ddefine("FONT_SIZE", 12);
+	ddefine("UNDERSCORE_AS_SPACE", TRUE);
+	ddefine("NL_TO_BR", FALSE);
+	ddefine("SHOW_EXIF_INFO", TRUE);
 
-	define("THUMB_MAX_WIDTH", 160);
-	define("THUMB_MAX_HEIGHT", 120);
-	define("THUMB_ENLARGE", FALSE);
-	define("THUMB_JPEG_QUALITY", 75);
+	ddefine("THUMB_MAX_WIDTH", 200);
+	ddefine("THUMB_MAX_HEIGHT", 150);
+	ddefine("THUMB_ENLARGE", FALSE);
+	ddefine("THUMB_JPEG_QUALITY", 80);
 
-	define("USE_PREVIEW", FALSE);
-	define("PREVIEW_MAX_WIDTH", 600);
-	define("PREVIEW_MAX_HEIGHT", 400);
-	define("PREVIEW_ENLARGE", FALSE);
-	define("PREVIEW_JPEG_QUALITY", 75);
+	ddefine("USE_PREVIEW", TRUE);
+	ddefine("PREVIEW_MAX_WIDTH", 900);
+	ddefine("PREVIEW_MAX_HEIGHT", 675);
+	ddefine("PREVIEW_ENLARGE", FALSE);
+	ddefine("PREVIEW_JPEG_QUALITY", 85);
 
-	define("WATERMARK", "");
+	ddefine("WATERMARK", "");
 
-	define("INFO_BOX_WIDTH", 250);
-	define("MENU_BOX_HEIGHT", 70);
-	define("NAV_BAR_HEIGHT", 25);
+	ddefine("INFO_BOX_WIDTH", 250);
+	ddefine("MENU_BOX_HEIGHT", 70);
+	ddefine("NAV_BAR_HEIGHT", 25);
 
-	define("THUMB_BORDER_WIDTH", 1);
-	define("THUMB_MARGIN", 10);
-	define("THUMB_BOX_MARGIN", 7);
-	define("THUMB_BOX_EXTRA_HEIGHT", 14);
-	define("THUMB_CHARS_MAX", 20);
+	ddefine("THUMB_BORDER_WIDTH", 1);
+	ddefine("THUMB_MARGIN", 10);
+	ddefine("THUMB_BOX_MARGIN", 7);
+	ddefine("THUMB_BOX_EXTRA_HEIGHT", 14);
+	ddefine("THUMB_CHARS_MAX", 100);
 
-	define("FULLIMG_BORDER_WIDTH", 5);
-	define("NAVI_CHARS_MAX", 100);
+	ddefine("FULLIMG_BORDER_WIDTH", 5);
+	ddefine("NAVI_CHARS_MAX", 100);
 
-	define("OVERLAY_OPACITY", 90);
-	define("FADE_FRAME_PER_SEC", 30);
-	define("FADE_DURATION_MS", 300);
-	define("LOAD_FADE_GRACE", 500);
+	ddefine("OVERLAY_OPACITY", 90);
+	ddefine("FADE_FRAME_PER_SEC", 30);
+	ddefine("FADE_DURATION_MS", 300);
+	ddefine("LOAD_FADE_GRACE", 500);
 
 	ddefine("TEXT_GALLERY_NAME", "Single File PHP Gallery");
 	ddefine("TEXT_HOME", "Home");
