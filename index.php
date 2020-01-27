@@ -924,8 +924,8 @@
 		{
 			if (imgLink.length > 0)
 			{
-				menu = '<span onmouseover=\"this.className=\'sfpg_button_hover\';\" onmouseout=\"this.className=\'sfpg_button\';\" class=\"sfpg_button\" onclick=\"cycleImg(-1)\">" . str_to_script(TEXT_PREVIOUS) . "</span>';
-				menu += '<span onmouseover=\"this.className=\'sfpg_button_hover\';\" onmouseout=\"this.className=\'sfpg_button\';\" class=\"sfpg_button\" onclick=\"cycleImg(1)\">" . str_to_script(TEXT_NEXT) . "</span>';
+				menu = '<span onmouseover=\"this.className=\'sfpg_button_hover\';\" onmouseout=\"this.className=\'sfpg_button\';\" class=\"sfpg_button\" id=\"previous-active\" title=\"".str_to_script(TEXT_KEYBOARD_NAV)."\" onclick=\"cycleImg(-1)\">" . str_to_script(TEXT_PREVIOUS) . "</span>';
+				menu += '<span onmouseover=\"this.className=\'sfpg_button_hover\';\" onmouseout=\"this.className=\'sfpg_button\';\" class=\"sfpg_button\" id=\"next-active\" title=\"".str_to_script(TEXT_KEYBOARD_NAV)."\" onclick=\"cycleImg(1)\">" . str_to_script(TEXT_NEXT) . "</span>';
 			}
 			else
 			{
@@ -995,8 +995,8 @@
 				echo "menu += '<span onmouseover=\"this.className=\'sfpg_button_hover\';\" onmouseout=\"this.className=\'sfpg_button\';\" class=\"sfpg_button\" onclick=\"window.location=\'".LINK_BACK."\'\">".TEXT_LINK_BACK."</span>';
 				";
 			}
-			echo "menu += '<span onmouseover=\"this.className=\'sfpg_button_hover\';\" onmouseout=\"this.className=\'sfpg_button\';\" class=\"sfpg_button\" onclick=\"window.location=\'http://sye.dk/sfpg/\'\">sfpg - sye.dk</span>';
-			document.getElementById('div_menu').innerHTML = menu;
+			//echo "menu += '<span onmouseover=\"this.className=\'sfpg_button_hover\';\" onmouseout=\"this.className=\'sfpg_button\';\" class=\"sfpg_button\" onclick=\"window.location=\'http://sye.dk/sfpg/\'\">sfpg - sye.dk</span>';";
+			echo "document.getElementById('div_menu').innerHTML = menu;
 		}
 
 
@@ -1418,9 +1418,15 @@
 			}
 		}
 
+		window.onkeyup = function(event) {
+			klavesa = event.keyCode;
+			if (klavesa == 37 && document.getElementById('previous-active')) cycleImg(-1)
+			if (klavesa == 39 && document.getElementById('next-active')) cycleImg(1)
+		}
+
 		\n\n";
 
-		echo "navLink[1] = '" . sfpg_url_string('') . "';\n";
+		echo "navLink[1] = '" . sfpg_url_string('./') . "';\n";
 		echo "navName[1] = '" . str_to_script(TEXT_HOME) . "';\n\n";
 
 		$links = explode("/", GALLERY);
